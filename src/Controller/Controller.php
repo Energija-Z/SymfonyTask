@@ -9,66 +9,14 @@ use Symfony\Component\Routing\Attribute\Route;
 
 use App\Entity\ScoreForm;
 use App\Form\Type\ScoreFormType;
+use App\Form\Type\SearchType;
 
 class Controller extends AbstractController
 {
-    private $var = array();
-
     #[Route('/', name: 'homepage')]
     public function index(): Response
     {
         return $this->render("default/index.html.twig");
-    }
-
-    #[Route('/newMatch')]
-    public function newMatch(Request $request): Response
-    {
-        $task = new ScoreForm();
-        $task->setHomeTeam('France');
-        $task->setAwayTeam('Germany');
-
-        $form = $this->createForm(ScoreFormType::class, $task);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // $form->getData() holds the submitted values
-            // but, the original `$task` variable has also been updated
-            $task = $form->getData();
-
-            array_push($this->var, $task);
-            // ... perform some action, such as saving the task to the database
-
-            //return $this->redirectToRoute('currentMatch');
-
-            /*return $this->render('default/currentMatch.html.twig', [
-                'form' => $form,
-            ]);*/
-        }
-
-        return $this->render('default/newMatch.html.twig', [
-            'form' => $form,
-        ]);
-
-/*
-        $task = new TeamForm();
-        //$task->setTask('Write a blog post');
-        //$task->setDueDate(new \DateTimeImmutable('tomorrow'));
-
-        $form = $this->createFormBuilder($task)
-            ->add('team', TextType::class)
-            //->add('dueDate', DateType::class)
-            ->add('save', SubmitType::class, ['label' => 'Create Task'])
-            ->getForm();*/
-        //return $this->render("default/newMatch.html.twig", ['form' => $form]);
-    }
-
-    #[Route('/currentMatch', name: 'currentMatch')]
-    public function currentMatch(Request $request): Response
-    {
-        //$tmp = array_pop($this->var);
-        //echo $tmp->getHomeTeam();
-
-        return $this->render('default/currentMatch.html.twig');
     }
 
     #[Route('/scoreSummary')]
@@ -77,6 +25,39 @@ class Controller extends AbstractController
         echo($this->var);
 
         return $this->render("default/scoreSummary.html.twig");
+    }
+
+
+    #[Route('/newMatch', name: "newMatch")]
+    public function newMatch(Request $request): Response
+    {
+        $form = $this->createForm(ScoreFormType::class);
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+            $task = $form->getData();
+ 
+            $dataHomeTeam = $task['homeTeam'];
+            $dataAwayTeam = $task['awayTeam'];
+
+            return $this->redirectToRoute('currentMatch', [
+                "homeTeam" => $dataHomeTeam,
+                "awayTeam" => $dataAwayTeam
+            ]);
+        }
+
+        return $this->render('default/newMatch.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/currentMatch/{homeTeam},{awayTeam}', name: 'currentMatch')]
+    public function currentMatch(string $homeTeam, string $awayTeam): Response
+    {        
+        return $this->render('default/currentMatch.html.twig', [
+            "homeTeam" => $homeTeam,
+            "awayTeam" => $awayTeam
+        ]);
     }
 }
 ?>

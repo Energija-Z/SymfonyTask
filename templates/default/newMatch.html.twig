@@ -1,10 +1,9 @@
 <html>
     <body>
-        {{ form(form) }}
-        <!--<a href="/">Return to index</a>
-        <h1>Please enter the two teams:</h1>
-        <label>Home team: <input type="text" name="homeTeam"/></label><br/><br/>
-        <label>Away team: <input type="text" name="awayTeam"/></label><br/><br/>
-        <button>Submit</button> -->
+    {{ form_start(form) }}
+        {{ form_row(form.homeTeam) }}
+        {{ form_row(form.awayTeam) }}
+        {{ form_row(form.save) }}
+    {{ form_end(form) }}
     </html>
 </body>

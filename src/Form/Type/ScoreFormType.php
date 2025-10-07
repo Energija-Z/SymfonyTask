@@ -3,7 +3,6 @@ namespace App\Form\Type;
 
 use App\Entity\ScoreForm;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,17 +14,15 @@ class ScoreFormType extends AbstractType
     {
         $builder
             ->add('homeTeam', TextType::class)
-            ->add('homeTeamScore', IntegerType::class)
             ->add('awayTeam', TextType::class)
-            ->add('awayTeamScore', IntegerType::class)
-            ->add('save', SubmitType::class)
+            ->add('save', SubmitType::class, ["label" => "Start new match"])
         ;
     }
     
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
+        $resolver->setDefaults([]/*[
             'data_class' => ScoreForm::class,
-        ]);
+        ]*/);
     }
 }
