@@ -60,19 +60,23 @@ class Controller extends AbstractController
     public function currentMatch(string $homeTeam, string $awayTeam, Request $request): Response
     {
         $form = $this->createForm(ScoreFormType::class);
-
-        $dataHomeTeamScore = rand(0, 10);
-        $dataAwayTeamScore = rand(0, 10);
+        $form->get("homeTeamScore")->setData(0);
+        $form->get("awayTeamScore")->setData(0);
 
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
             $task = $form->getData();
+
+            /*
+            <label for="{{ form.homeTeamScore }}">{{homeTeam}} {{ form_row(form.homeTeamScore) }}</label>
+            <label for="{{ form.homeTeamScore }}">{{awayTeam}} {{ form_row(form.homeTeamScore) }}</label>
+             */
  
             return $this->redirectToRoute('scoreSummary', [
                 "homeTeam" => $homeTeam,
                 "awayTeam" => $awayTeam,
-                "homeTeamScore" => $dataHomeTeamScore,
-                "awayTeamScore" => $dataAwayTeamScore
+                "homeTeamScore" => $task["homeTeamScore"],
+                "awayTeamScore" => $task["awayTeamScore"]
             ]);
         }
 
@@ -80,8 +84,8 @@ class Controller extends AbstractController
             'form' => $form,
             "homeTeam" => $homeTeam,
             "awayTeam" => $awayTeam,
-            "homeTeamScore" => $dataHomeTeamScore,
-            "awayTeamScore" => $dataAwayTeamScore
+            "homeTeamScore" => 0,
+            "awayTeamScore" => 0
         ]);
     }
 }

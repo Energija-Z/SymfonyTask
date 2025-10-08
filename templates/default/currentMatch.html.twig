@@ -2,12 +2,35 @@
     <body>
         <h1>Match between home and away team:</h1>
         <h2>{{homeTeam}} vs. {{awayTeam}}</h2>
-        <h2>{{homeTeamScore}} - {{awayTeamScore}}</h2>
         {{ form_start(form) }}
             {{ form_row(form.homeTeamScore) }}
             {{ form_row(form.awayTeamScore) }}
             {{ form_row(form.save) }}
         {{ form_end(form) }}
-        <button onclick="location.reload()">Reload</button>
+        <script>
+            let homeTeamScore = parseInt(document.querySelector("#score_form_homeTeamScore").value);
+            let awayTeamScore = parseInt(document.querySelector("#score_form_awayTeamScore").value);
+            let homeTeamScoreNumber = parseInt(homeTeamScore);
+            let awayTeamScoreNumber = parseInt(awayTeamScore);
+
+            document.querySelector("button").addEventListener("click", (event) => {
+                if(homeTeamScoreNumber < 0 || awayTeamScoreNumber < 0){
+                    event.preventDefault();
+                    alert("Team score cannot be less than zero.")
+                }
+            })
+
+            setInterval(function(){
+                if(Math.floor(Math.random() * 100 + 1) >= 50){
+                    let probability = Math.floor(Math.random() * 100 + 1);
+                    if(probability <= 5){
+                        document.querySelector("#score_form_homeTeamScore").value = ++homeTeamScoreNumber;
+                    }
+                    else if(probability >= 95){
+                        document.querySelector("#score_form_awayTeamScore").value = ++awayTeamScoreNumber;
+                    }
+                }
+            }, 5000)
+        </script>
     </body>
 </html>
