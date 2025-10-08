@@ -8,30 +8,35 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 use App\Entity\ScoreForm;
+use App\Form\Type\TeamFormType;
 use App\Form\Type\ScoreFormType;
 use App\Form\Type\SearchType;
+use App\Service\SharedDataService;
 
 class Controller extends AbstractController
 {
     #[Route('/', name: 'homepage')]
-    public function index(): Response
+    public function index(SharedDataService $sds): Response
     {
+        foreach($sds->getScores() as $i)
+            echo $i." score";
         return $this->render("default/index.html.twig");
     }
 
-    #[Route('/scoreSummary')]
-    public function scoreSummary(): Response
+    #[Route('/scoreSummary/{homeTeam},{awayTeam},{homeTeamScore},{awayTeamScore}', name: "scoreSummary")]
+    public function scoreSummary(string $homeTeam, string $awayTeam, int $homeTeamScore, int $awayTeamScore, SharedDataService $sds): Response
     {
-        echo($this->var);
-
-        return $this->render("default/scoreSummary.html.twig");
+        $sds->setScore(new ScoreForm($homeTeam, $awayTeam, $homeTeamScore, $awayTeamScore));
+        return $this->render("default/scoreSummary.html.twig", [
+            "homeTeam" => $homeTeam,
+            "homeTeamScore" => $homeTeamScore
+        ]);
     }
-
 
     #[Route('/newMatch', name: "newMatch")]
     public function newMatch(Request $request): Response
     {
-        $form = $this->createForm(ScoreFormType::class);
+        $form = $this->createForm(TeamFormType::class);
 
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
@@ -52,11 +57,31 @@ class Controller extends AbstractController
     }
 
     #[Route('/currentMatch/{homeTeam},{awayTeam}', name: 'currentMatch')]
-    public function currentMatch(string $homeTeam, string $awayTeam): Response
-    {        
+    public function currentMatch(string $homeTeam, string $awayTeam, Request $request): Response
+    {
+        $form = $this->createForm(ScoreFormType::class);
+
+        $dataHomeTeamScore = rand(0, 10);
+        $dataAwayTeamScore = rand(0, 10);
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+            $task = $form->getData();
+ 
+            return $this->redirectToRoute('scoreSummary', [
+                "homeTeam" => $homeTeam,
+                "awayTeam" => $awayTeam,
+                "homeTeamScore" => $dataHomeTeamScore,
+                "awayTeamScore" => $dataAwayTeamScore
+            ]);
+        }
+
         return $this->render('default/currentMatch.html.twig', [
+            'form' => $form,
             "homeTeam" => $homeTeam,
-            "awayTeam" => $awayTeam
+            "awayTeam" => $awayTeam,
+            "homeTeamScore" => $dataHomeTeamScore,
+            "awayTeamScore" => $dataAwayTeamScore
         ]);
     }
 }

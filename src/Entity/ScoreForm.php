@@ -9,6 +9,13 @@ class ScoreForm
     protected int $homeTeamScore = 0;
     protected int $awayTeamScore = 0;
 
+    public function __construct(string $homeTeam, string $awayTeam, int $homeScore, int $awayScore){
+        $this->homeTeamName = $homeTeam;
+        $this->awayTeamName = $awayTeam;
+        $this->homeTeamScore = $homeScore;
+        $this->awayTeamScore = $awayScore;
+    }
+
     public function getAwayTeam(): string { return $this->awayTeamName; }
 
     public function getAwayTeamScore(): int { return $this->awayTeamScore; }
