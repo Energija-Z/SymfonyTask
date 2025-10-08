@@ -26,10 +26,17 @@ class Controller extends AbstractController
     #[Route('/scoreSummary/{homeTeam},{awayTeam},{homeTeamScore},{awayTeamScore}', name: "scoreSummary")]
     public function scoreSummary(string $homeTeam, string $awayTeam, int $homeTeamScore, int $awayTeamScore, SharedDataService $sds): Response
     {
-        $sds->setScore(new ScoreForm($homeTeam, $awayTeam, $homeTeamScore, $awayTeamScore));
+        $var = new ScoreForm($homeTeam, $awayTeam, $homeTeamScore, $awayTeamScore);
+        $sds->setScore($var);
+        
+        foreach($sds->getScores() as $i)
+            echo $i->getAwayTeam()." score";
+
         return $this->render("default/scoreSummary.html.twig", [
             "homeTeam" => $homeTeam,
-            "homeTeamScore" => $homeTeamScore
+            "homeTeamScore" => $homeTeamScore,
+            "awayTeam" => $awayTeam,
+            "awayTeamScore" => $awayTeamScore
         ]);
     }
 
@@ -41,13 +48,10 @@ class Controller extends AbstractController
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
             $task = $form->getData();
- 
-            $dataHomeTeam = $task['homeTeam'];
-            $dataAwayTeam = $task['awayTeam'];
 
             return $this->redirectToRoute('currentMatch', [
-                "homeTeam" => $dataHomeTeam,
-                "awayTeam" => $dataAwayTeam
+                "homeTeam" => $task['homeTeam'],
+                "awayTeam" => $task['awayTeam']
             ]);
         }
 
@@ -67,11 +71,6 @@ class Controller extends AbstractController
         if($form->isSubmitted() && $form->isValid()) {
             $task = $form->getData();
 
-            /*
-            <label for="{{ form.homeTeamScore }}">{{homeTeam}} {{ form_row(form.homeTeamScore) }}</label>
-            <label for="{{ form.homeTeamScore }}">{{awayTeam}} {{ form_row(form.homeTeamScore) }}</label>
-             */
- 
             return $this->redirectToRoute('scoreSummary', [
                 "homeTeam" => $homeTeam,
                 "awayTeam" => $awayTeam,
