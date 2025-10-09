@@ -1,8 +1,14 @@
 <html>
     <body>
+        <h2>Score list</h2>
         <a href="/">Return to index</a>
-        <ul>
-            <li>{{homeTeam}}: {{homeTeamScore}} - {{awayTeam}}: {{awayTeamScore}}</li>
-        </ul>
+        <a href="/newMatch">Start new match</a>
+        <br/>
+        <strong>Home team - away team</strong>
+        <ol>
+            {% for i in data %}
+                <li>{{ i.getHomeTeam() }} {{ i.getHomeTeamScore() }} - {{ i.getAwayTeam() }} {{ i.getAwayTeamScore() }}</li>
+            {% endfor %}
+        </ol>
     </html>
 </body>

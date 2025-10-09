@@ -4,8 +4,8 @@
         <h1>Match between home and away team:</h1>
         <h2>{{homeTeam}} vs. {{awayTeam}}</h2>
         {{ form_start(form) }}
-            {{ form_row(form.homeTeamScore) }}
-            {{ form_row(form.awayTeamScore) }}
+            {{ form_row(form.homeTeamScore, { 'label': homeTeam } ) }}
+            {{ form_row(form.awayTeamScore, { 'label': awayTeam } ) }}
             {{ form_row(form.save) }}
         {{ form_end(form) }}
         <script>
